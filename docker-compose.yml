@@ -1,0 +1,31 @@
+---
+version: "3.9"
+services:
+  wireguard:
+    image: wireguard.custom
+    container_name: wireguard
+    build: .
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Singapore
+      - SERVERURL=cxo2.me
+      - SERVERPORT=51820
+      - PEERS=0
+      - PEERDNS=auto
+      - INTERNAL_SUBNET=10.8.0.0
+      - ALLOWEDIPS=0.0.0.0/0
+    volumes:
+      - ./data:/config
+      - ./data/wg-dashboard.ini:/wgdashboard/wg-dashboard.ini
+      - /lib/modules:/lib/modules
+    ports:
+      - 51820:51820/udp
+      - 10086:10086
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+
